@@ -1,0 +1,308 @@
+# Datapoint Monitor Configuration for MID252 (ABC Klinker)
+# Based on ~/Projects/MID_GG_Configs/mid252/mid252_mockbus_config.yaml
+
+server:
+  protocol: modbus
+  host: 127.0.0.1
+  port: 2525
+  unit_id: 1
+  endianness: big
+
+scan_interval_ms: 1000
+
+datapoints:
+  # ===== RTU -> Controller (Read) =====
+  
+  - name: "RTU Status Register 1"
+    address: 0
+    length: 1
+    data_type: bitfield
+    description: "Status flags from RTU"
+    bitfields:
+      - bit: 0
+        name: "Toggle bit"
+      - bit: 1
+        name: "IEC101/IEC104 Connection OK"
+      - bit: 8
+        name: "Reactive Power Voltage Control Mode"
+      - bit: 9
+        name: "Reserved"
+      - bit: 10
+        name: "Reactive Power Limited Voltage Control Mode"
+  
+  - name: "RTU Status Register 2"
+    address: 1
+    length: 1
+    data_type: u16
+    description: "Status Register 2 (unused)"
+  
+  - name: "RTU Asset 1 - Active Power Setpoint %"
+    address: 2
+    length: 2
+    data_type: i32
+    description: "GridSetpointActivePowerDirectivePercentage"
+  
+  - name: "RTU Asset 2 - Active Power Setpoint %"
+    address: 4
+    length: 2
+    data_type: i32
+    description: "GridSetpointActivePowerDirectivePercentage"
+  
+  - name: "RTU Asset 3 - Active Power Setpoint %"
+    address: 6
+    length: 2
+    data_type: i32
+    description: "GridSetpointActivePowerDirectivePercentage"
+  
+  - name: "RTU Asset 4 - Active Power Setpoint %"
+    address: 8
+    length: 2
+    data_type: i32
+    description: "GridSetpointActivePowerDirectivePercentage"
+  
+  - name: "RTU Reactive Power Volt Relative Voltage Zero Q"
+    address: 84
+    length: 2
+    data_type: i32
+    description: "GridSetpointReactivePowerVoltRelativeVoltageZeroQ"
+  
+  - name: "RTU Reactive Power Limited Volt Ref Q"
+    address: 86
+    length: 2
+    data_type: i32
+    description: "GridSetpointReactivePowerLimitedVoltRefQ"
+  
+  # ===== Controller -> RTU (Write) =====
+  
+  - name: "Controller Status Register 1"
+    address: 1000
+    length: 1
+    data_type: bitfield
+    description: "Status flags to RTU"
+    bitfields:
+      - bit: 0
+        name: "Toggle bit"
+      - bit: 1
+        name: "IEC101/IEC104 Connection OK"
+      - bit: 8
+        name: "Reactive Power Voltage Control Mode"
+      - bit: 9
+        name: "Reserved"
+      - bit: 10
+        name: "Reactive Power Limited Voltage Control Mode"
+  
+  - name: "Controller Status Register 2"
+    address: 1001
+    length: 1
+    data_type: u16
+    description: "Status Register 2 (unused)"
+  
+  - name: "Asset 1 - Telemetry Active Power Directive %"
+    address: 1002
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricDirectiveActivePowerPercent"
+  
+  - name: "Asset 2 - Telemetry Active Power Directive %"
+    address: 1004
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricDirectiveActivePowerPercent"
+  
+  - name: "Asset 3 - Telemetry Active Power Directive %"
+    address: 1006
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricDirectiveActivePowerPercent"
+  
+  - name: "Asset 4 - Telemetry Active Power Directive %"
+    address: 1008
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricDirectiveActivePowerPercent"
+  
+  - name: "Asset 1 - Telemetry Active Power"
+    address: 1022
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricActivePower"
+  
+  - name: "Asset 2 - Telemetry Active Power"
+    address: 1024
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricActivePower"
+  
+  - name: "Asset 3 - Telemetry Active Power"
+    address: 1026
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricActivePower"
+  
+  - name: "Asset 4 - Telemetry Active Power"
+    address: 1028
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricActivePower"
+  
+  - name: "Asset 1 - Available Active Power"
+    address: 1042
+    length: 2
+    data_type: i32
+    description: "Available Active Power"
+  
+  - name: "Asset 2 - Available Active Power"
+    address: 1044
+    length: 2
+    data_type: i32
+    description: "Available Active Power"
+  
+  - name: "Asset 3 - Available Active Power"
+    address: 1046
+    length: 2
+    data_type: i32
+    description: "Available Active Power"
+  
+  - name: "Asset 4 - Available Active Power"
+    address: 1048
+    length: 2
+    data_type: i32
+    description: "Available Active Power"
+  
+  - name: "Asset 1 - Telemetry Reactive Power"
+    address: 1062
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricReactivePower"
+  
+  - name: "Asset 2 - Telemetry Reactive Power"
+    address: 1064
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricReactivePower"
+  
+  - name: "Asset 3 - Telemetry Reactive Power"
+    address: 1066
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricReactivePower"
+  
+  - name: "Asset 4 - Telemetry Reactive Power"
+    address: 1068
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricReactivePower"
+  
+  - name: "Asset 1 - Available Reactive Power (Underexcited)"
+    address: 1082
+    length: 2
+    data_type: i32
+    description: "Available Reactive power (underexcited)"
+  
+  - name: "Asset 2 - Available Reactive Power (Underexcited)"
+    address: 1084
+    length: 2
+    data_type: i32
+    description: "Available Reactive power (underexcited)"
+  
+  - name: "Asset 3 - Available Reactive Power (Underexcited)"
+    address: 1086
+    length: 2
+    data_type: i32
+    description: "Available Reactive power (underexcited)"
+  
+  - name: "Asset 4 - Available Reactive Power (Underexcited)"
+    address: 1088
+    length: 2
+    data_type: i32
+    description: "Available Reactive power (underexcited)"
+  
+  - name: "Asset 1 - Available Reactive Power (Overexcited)"
+    address: 1102
+    length: 2
+    data_type: i32
+    description: "Available Reactive power (overexcited)"
+  
+  - name: "Asset 2 - Available Reactive Power (Overexcited)"
+    address: 1104
+    length: 2
+    data_type: i32
+    description: "Available Reactive power (overexcited)"
+  
+  - name: "Asset 3 - Available Reactive Power (Overexcited)"
+    address: 1106
+    length: 2
+    data_type: i32
+    description: "Available Reactive power (overexcited)"
+  
+  - name: "Asset 4 - Available Reactive Power (Overexcited)"
+    address: 1108
+    length: 2
+    data_type: i32
+    description: "Available Reactive power (overexcited)"
+  
+  - name: "Asset 1 - Available Generators"
+    address: 1122
+    length: 2
+    data_type: i32
+    description: "Available Generators"
+  
+  - name: "Asset 2 - Available Generators"
+    address: 1124
+    length: 2
+    data_type: i32
+    description: "Available Generators"
+  
+  - name: "Asset 3 - Available Generators"
+    address: 1126
+    length: 2
+    data_type: i32
+    description: "Available Generators"
+  
+  - name: "Asset 4 - Available Generators"
+    address: 1128
+    length: 2
+    data_type: i32
+    description: "Available Generators"
+  
+  - name: "Asset 1 - External Active Power Reduction"
+    address: 1142
+    length: 2
+    data_type: i32
+    description: "External active power reduction"
+  
+  - name: "Asset 2 - External Active Power Reduction"
+    address: 1144
+    length: 2
+    data_type: i32
+    description: "External active power reduction"
+  
+  - name: "Asset 3 - External Active Power Reduction"
+    address: 1146
+    length: 2
+    data_type: i32
+    description: "External active power reduction"
+  
+  - name: "Asset 4 - External Active Power Reduction"
+    address: 1148
+    length: 2
+    data_type: i32
+    description: "External active power reduction"
+  
+  - name: "Telemetry Reactive Power Volt Relative Voltage Zero Q"
+    address: 1164
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricReactivePowerVoltRelativeVoltageZeroQ"
+  
+  - name: "Telemetry Reactive Power Limited Volt Ref Q"
+    address: 1166
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricReactivePowerLimitedVoltRefQ"
+  
+  - name: "Telemetry Global Irradiance"
+    address: 1192
+    length: 2
+    data_type: i32
+    description: "GridTelemetryMetricGlobalIrradiance"

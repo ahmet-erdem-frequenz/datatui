@@ -1,0 +1,45 @@
+# Datapoint Monitor Configuration
+# Matches mockbus-tcp server at ~/Projects/matrix-mock/rust/examples/gg_test.yaml
+
+server:
+  protocol: modbus
+  host: 127.0.0.1
+  port: 9002
+  unit_id: 1
+  endianness: little  # or 'little' - affects multi-register values (u32, i32, f32)
+
+# Scan interval in milliseconds
+scan_interval_ms: 1000
+
+# Datapoint definitions
+# Registers from gg_test.yaml mockbus configuration
+datapoints:
+  - name: "Grid Telemetry Active Power %"
+    address: 19010
+    length: 4
+    data_type: u16
+    description: "GridTelemetryMetricDirectiveActivePowerPercent [19010-19013]"
+
+  - name: "Grid Telemetry Reactive Power %"
+    address: 19020
+    length: 1
+    data_type: u16
+    description: "GridTelemetryMetricDirectiveReactivePowerPercent [19020]"
+
+  - name: "Grid Setpoint Active Power %"
+    address: 19000
+    length: 2
+    data_type: f32
+    description: "GridSetpointActivePowerDirectivePercentage [19000-19001]"
+
+  - name: "Mode Control Word"
+    address: 19050
+    length: 2
+    data_type: u32
+    description: "MODE_CONTROL_WORD [19050-19051]"
+
+  - name: "Grid Setpoint Reactive Power Volt Curve"
+    address: 19055
+    length: 2
+    data_type: u32
+    description: "GridSetpointReactivePowerLimitedVoltCurve [19055-19056]"
