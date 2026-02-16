@@ -1,0 +1,39 @@
+name: fz-datatui-CI
+
+on:
+  push:
+    branches:
+      - v[0-9]+.[0-9]+.x
+      - v[0-9]+.x.x
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+      - "v0.x.x"
+  pull_request:
+    branches:
+      - v[0-9]+.[0-9]+.x
+      - v[0-9]+.x.x
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      build-debs:
+        description: "Build debian packages"
+        required: false
+        default: "no"
+      build-platforms:
+        description: "List of target architectures to build for"
+        required: false
+        default: '["amd64", "arm64"]'
+      upload-debs-to-apt-repo:
+        description: "Upload debian packages to apt.frequenz.io"
+        required: false
+        default: "no"
+
+jobs:
+  cargo:
+    uses: frequenz-io/gh-workflow-cargo-edge/.github/workflows/workflow.yaml@v0.x.x
+    secrets: inherit
+    with:
+      build-debs: ${{ github.event_name == 'release' && 'yes' || github.event.inputs.build-debs }}
+      build-platforms: ${{ github.event_name == 'release' && '["amd64", "arm64"]' || github.event.inputs.build-platforms }}
+      upload-debs-to-apt-repo: ${{ github.event_name == 'release' && 'yes' || github.event.inputs.upload-debs-to-apt-repo }}
