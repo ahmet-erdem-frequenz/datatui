@@ -1,5 +1,7 @@
 # Datapoint TUI
 
+The repository is archived, please check the upstream version: https://github.com/ahmet-erdem-frequenz/fz-datatui
+
 A terminal-based dashboard for real-time monitoring of Modbus server datapoints with support for multiple data types including bitfields.
 
 ## Features
@@ -57,14 +59,14 @@ datapoints:
     data_type: i16
     register_type: holding  # or 'input'
     description: "Room temperature sensor"
-  
+
   # Multi-register value
   - name: "Power Output"
     address: 1010
     length: 2
     data_type: i32
     register_type: holding
-  
+
   # Bitfield with named bits
   - name: "Status Register"
     address: 0
@@ -182,7 +184,7 @@ datapoints:
     address: 0
     length: 1
     data_type: u16
-  
+
   - name: "Current"
     address: 1
     length: 1
