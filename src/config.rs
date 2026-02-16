@@ -66,8 +66,8 @@ fn default_register_type() -> RegisterType {
 #[derive(Debug, Clone, Copy, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum RegisterType {
-    Holding,  // Function code 3
-    Input,    // Function code 4
+    Holding, // Function code 3
+    Input,   // Function code 4
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -92,10 +92,10 @@ pub enum DataType {
 
 impl Config {
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Self> {
-        let content = fs::read_to_string(path.as_ref())
-            .context("Failed to read configuration file")?;
-        let config: Config = serde_yaml::from_str(&content)
-            .context("Failed to parse configuration file")?;
+        let content =
+            fs::read_to_string(path.as_ref()).context("Failed to read configuration file")?;
+        let config: Config =
+            serde_yaml::from_str(&content).context("Failed to parse configuration file")?;
         Ok(config)
     }
 }

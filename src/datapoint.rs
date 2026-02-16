@@ -1,6 +1,6 @@
 use chrono::{DateTime, Local};
-use std::fmt;
 use std::collections::HashMap;
+use std::fmt;
 
 #[derive(Debug, Clone)]
 pub struct Datapoint {
@@ -62,8 +62,13 @@ impl Datapoint {
             bitfield_names: None,
         }
     }
-    
-    pub fn with_bitfields(name: String, address: u16, description: Option<String>, bitfield_names: HashMap<u8, String>) -> Self {
+
+    pub fn with_bitfields(
+        name: String,
+        address: u16,
+        description: Option<String>,
+        bitfield_names: HashMap<u8, String>,
+    ) -> Self {
         Self {
             name,
             address,
@@ -85,9 +90,11 @@ impl Datapoint {
         self.error = Some(error);
         self.last_updated = Some(Local::now());
     }
-    
+
     pub fn get_bitfield_status(&self) -> Option<Vec<(u8, String, bool)>> {
-        if let (Some(bitfield_names), Some(DataValue::Bitfield(value))) = (&self.bitfield_names, &self.value) {
+        if let (Some(bitfield_names), Some(DataValue::Bitfield(value))) =
+            (&self.bitfield_names, &self.value)
+        {
             let mut bits = Vec::new();
             for (bit, name) in bitfield_names {
                 let is_set = (*value & (1 << bit)) != 0;

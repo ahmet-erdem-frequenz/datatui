@@ -1,9 +1,9 @@
 use crate::config::{Config, DataType, Endianness};
 use crate::datapoint::{DataValue, Datapoint};
 use anyhow::Result;
+use log::{debug, error, info, warn};
 use tokio::time::Duration;
 use tokio_modbus::prelude::*;
-use log::{debug, info, warn, error};
 
 pub struct Scanner {
     config: Config,
@@ -21,7 +21,12 @@ impl Scanner {
                     for bf in bitfields {
                         bitfield_map.insert(bf.bit, bf.name.clone());
                     }
-                    Datapoint::with_bitfields(dp.name.clone(), dp.address, dp.description.clone(), bitfield_map)
+                    Datapoint::with_bitfields(
+                        dp.name.clone(),
+                        dp.address,
+                        dp.description.clone(),
+                        bitfield_map,
+                    )
                 } else {
                     Datapoint::new(dp.name.clone(), dp.address, dp.description.clone())
                 }
@@ -49,20 +54,21 @@ impl Scanner {
             // IPv4 address or hostname
             format!("{}:{}", self.config.server.host, self.config.server.port)
         };
-        
+
         info!("Connecting to Modbus server at {}", socket_addr);
-        
+
         // Add timeout to connection attempt
         let connect_result = tokio::time::timeout(
             Duration::from_secs(5),
-            tcp::connect_slave(socket_addr.parse()?, Slave(self.config.server.unit_id))
-        ).await;
-        
+            tcp::connect_slave(socket_addr.parse()?, Slave(self.config.server.unit_id)),
+        )
+        .await;
+
         let mut ctx = match connect_result {
             Ok(Ok(ctx)) => {
                 debug!("Connected successfully");
                 ctx
-            },
+            }
             Ok(Err(e)) => {
                 error!("Connection failed: {}", e);
                 for i in 0..self.datapoints.len() {
@@ -82,21 +88,32 @@ impl Scanner {
         let endianness = self.config.server.endianness;
 
         for (i, dp_config) in self.config.datapoints.iter().enumerate() {
-            debug!("Reading {} at address {} (length {})", 
-                   dp_config.name, dp_config.address, dp_config.length);
-            
+            debug!(
+                "Reading {} at address {} (length {})",
+                dp_config.name, dp_config.address, dp_config.length
+            );
+
             // Add timeout to read operations as well
             let read_result = tokio::time::timeout(
                 Duration::from_secs(2),
                 match dp_config.register_type {
-                    crate::config::RegisterType::Holding => ctx.read_holding_registers(dp_config.address, dp_config.length),
-                    crate::config::RegisterType::Input => ctx.read_input_registers(dp_config.address, dp_config.length),
-                }
-            ).await;
-            
+                    crate::config::RegisterType::Holding => {
+                        ctx.read_holding_registers(dp_config.address, dp_config.length)
+                    }
+                    crate::config::RegisterType::Input => {
+                        ctx.read_input_registers(dp_config.address, dp_config.length)
+                    }
+                },
+            )
+            .await;
+
             match read_result {
                 Ok(Ok(Ok(registers))) => {
-                    debug!("Successfully read {} registers: {:?}", registers.len(), registers);
+                    debug!(
+                        "Successfully read {} registers: {:?}",
+                        registers.len(),
+                        registers
+                    );
                     let value = match dp_config.data_type {
                         DataType::U16 => {
                             if !registers.is_empty() {
@@ -115,8 +132,12 @@ impl Scanner {
                         DataType::U32 => {
                             if registers.len() >= 2 {
                                 let val = match endianness {
-                                    Endianness::Big => ((registers[0] as u32) << 16) | (registers[1] as u32),
-                                    Endianness::Little => ((registers[1] as u32) << 16) | (registers[0] as u32),
+                                    Endianness::Big => {
+                                        ((registers[0] as u32) << 16) | (registers[1] as u32)
+                                    }
+                                    Endianness::Little => {
+                                        ((registers[1] as u32) << 16) | (registers[0] as u32)
+                                    }
                                 };
                                 DataValue::U32(val)
                             } else {
@@ -126,8 +147,12 @@ impl Scanner {
                         DataType::I32 => {
                             if registers.len() >= 2 {
                                 let val = match endianness {
-                                    Endianness::Big => ((registers[0] as u32) << 16) | (registers[1] as u32),
-                                    Endianness::Little => ((registers[1] as u32) << 16) | (registers[0] as u32),
+                                    Endianness::Big => {
+                                        ((registers[0] as u32) << 16) | (registers[1] as u32)
+                                    }
+                                    Endianness::Little => {
+                                        ((registers[1] as u32) << 16) | (registers[0] as u32)
+                                    }
                                 };
                                 DataValue::I32(val as i32)
                             } else {
